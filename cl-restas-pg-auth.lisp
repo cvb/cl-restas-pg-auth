@@ -14,5 +14,9 @@
 ;; along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 (restas:define-module #:restas-pg-auth
-    (:use #:cl #:iterate))
+    (:use #:cl #:iterate #:postmodern))
 
+(in-package #:restas-pg-auth)
+
+(restas:define-route main ("hello")
+  "<h1>Hello world!</h1>")
