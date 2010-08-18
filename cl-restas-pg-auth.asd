@@ -25,4 +25,4 @@
 	       (:file "routes")
 	       (:module src
 			:serial t
-			)))
+			(:file "user"))))
