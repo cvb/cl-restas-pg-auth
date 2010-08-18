@@ -13,7 +13,7 @@
 ;; You should have received a copy of the GNU General Public License
 ;; along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-(in-package #:cl-restas-pg-auth)
+(in-package #:restas-pg-auth)
 
 (restas:define-route login ("login")
   "")
