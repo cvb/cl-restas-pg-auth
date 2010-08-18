@@ -24,8 +24,8 @@
    (salt :col-type (varchar 255) :initarg :salt
               :reader salt-of))
   (:metaclass dao-class)
-  (:unique name)
-  (:keys id))
+  ;(:unique name)
+  (:keys name))
 
 (defun random-passwd (len)
   (let* ((chars "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@#$%^&*()")
@@ -53,9 +53,9 @@
 (defgeneric same-password-p (username password)
   (:method ((username string) (password string))
     (with-connection *db*
-      (let ((u (select-dao 'userauth (:= 'name username))))
+      (let ((u (get-dao 'userauth username)))
 	(when u
-	 (if (string= (password-of (car u)) (calc-hash password (salt-of (car u))))
+	 (if (string= (password-of u) (calc-hash password (salt-of u)))
 	     t nil))))))
 
 (defun make-userauth (name password)
@@ -67,14 +67,14 @@
 
 (defun add-userauth (username password)
   (with-connection *db*
-    (if (select-dao 'userauth (:= 'name username))
+    (if (get-dao 'userauth username)
 	(error 'same-name-exist :name username)
 	(insert-dao (make-userauth username password)))))
 
 (defun del-userauth (username)
   (with-connection *db*
-    (let ((u (select-dao 'userauth (:= 'name username))))
-      (when u (delete-dao (car u))))))
+    (let ((u (get-dao 'userauth username)))
+      (when u (delete-dao u)))))
 
 (defun check-userauth-existence ()
   (with-connection *db* (table-exists-p (dao-table-name 'userauth))))

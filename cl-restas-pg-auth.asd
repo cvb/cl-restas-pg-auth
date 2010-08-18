@@ -19,7 +19,7 @@
 (in-package #:cl-restas-pg-auth-asd)
 
 (defsystem cl-restas-pg-auth
-  :depends-on (:iterate :restas :postmodern :ironclad)
+  :depends-on (:iterate :restas :postmodern :ironclad :local-time :cl-postgres+local-time)
   :serial t
   :components ((:file "cl-restas-pg-auth")
 	       (:file "routes")

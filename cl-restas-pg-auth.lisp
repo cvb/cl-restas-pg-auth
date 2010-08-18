@@ -14,12 +14,10 @@
 ;; along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 (restas:define-module #:restas-pg-auth
-    (:use #:cl #:iterate #:postmodern)
+    (:use #:cl #:iterate #:postmodern #:local-time)
   (:export #:*db*))
 
 (in-package #:restas-pg-auth)
 
 (defparameter *db* nil)
 
-(restas:define-route main ("hello")
-  "<h1>Hello world!</h1>")
