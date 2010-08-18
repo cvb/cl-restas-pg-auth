@@ -16,7 +16,7 @@
 (in-package :restas-pg-auth)
 
 (defclass userauth ()
-  ((id :col-type serial)
+  ((id :col-type serial :reader id-of)
    (name :col-type (varchar 255) :initarg :name
          :reader country-name)
    (password :col-type (varchar 255) :initarg :password
