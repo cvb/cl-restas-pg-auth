@@ -18,9 +18,10 @@
 (defparameter *session-expire* nil)
 
 (defclass session ()
-  ((user-id :col-type integer :initarg :user-id)
+  ((user-id :col-type integer :initarg :user-id :reader user-id)
    (s :col-type (varchar 255) :initarg :s :reader s-of)
-   (timestamp :col-type timestamp-with-time-zone :initform (local-time:now) :reader timestamp-of))
+   (timestamp :col-type timestamp-with-time-zone :initform (simple-date:universal-time-to-timestamp (get-universal-time))
+	      :reader timestamp-of))
   (:metaclass dao-class)
   (:keys user-id s))
 
@@ -49,14 +50,14 @@
       (:week (* 60 60 24 7 (car exp)))
       (:month (* 60 60 24 7 30 (car exp))))))
 
+
 (defgeneric check-session-expiration (session))
 (defmethod check-session-expiration ((s session))
   (if (< (exp-to-sec *session-expire*)
 	 (timestamp-difference (now) (timestamp-of s)))
-      (and (with-connection *db*
-	       (delete-dao s))
-	   t)
-      nil))
+       (with-connection *db*
+	    (delete-dao s) nil)
+      s))
 
 (define-condition no-such-session (error)
   ((s :initarg :s :reader s-of)))
@@ -66,6 +67,24 @@
       (if s1
 	  (check-session-expiration (car s1))
 	  (error 'no-such-session :s s)))))
+
+(defgeneric remove-session (s))
+
+(defmethod remove-session ((s session))
+  (with-connection *db*
+    (mapcar #'delete-dao (select-dao 'session (:= 'user-id (user-id s))))))
+
+(defmethod remove-session ((s string))
+  (with-connection *db*
+    (let ((d (select-dao 'session (:= 's s))))
+     (when d (mapcar #'delete-dao
+		     (select-dao 'session
+				 (:= 'user-id (user-id (car d)))))))))
+
+(defmethod remove-session ((s integer))
+  (with-connection *db*
+    (let ((d (select-dao 'session (:= 'user-id s))))
+     (mapcar #'delete-dao d))))
 
 (defun remove-expired-sessions ()
   (with-connection *db*

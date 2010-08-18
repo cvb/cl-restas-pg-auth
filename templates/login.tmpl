@@ -1,0 +1,35 @@
+
+// -*- mode: closure-template-html -*-
+//
+// forgot.tmpl
+//
+// This file is part of the restas-simple-auth library, released under Lisp-LGPL.
+// See file COPYING for details.
+//
+// Author: Moskvitin Andrey <archimag@gmail.com>
+
+  {namespace restas-pg-auth.view}
+
+  {template login}
+    <div class='login-form'>
+      <form method='post'>
+	<table>
+	  <tr>
+	    <td>Login:</td> <td><input name='username'></td>
+	  </tr>
+	  <tr>
+	    <td>Password:</td> <td><input name='password' type='passord'></td>
+	  </tr>
+	  <tr>
+	    <td><input name='Authorize' type='submit'></td>
+	  </tr>
+      </form>
+    </div>
+  {/template}
+
+  {template  loged-in}
+    <div class='loged-in'>
+      Authorized as {$username}
+    </div>
+  {/template}
+  

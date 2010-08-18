@@ -15,11 +15,26 @@
 
 (in-package #:restas-pg-auth)
 
-(restas:define-route login ("login")
-  "")
+(restas:define-route login ("login"
+			    :method :get)
+  (format t "Got params ~%" )
+  (if (logged-in-p)
+      (restas:render-object #'restas-pg-auth.view:loged-in (list :username (logged-in-as)))
+      (restas:render-object #'restas-pg-auth.view:login nil)))
+
+(restas:define-route login/post ("login"
+				 :method :post)
+  (format t "Got post ~%" )
+  (let ((username (hunchentoot:post-parameter "username"))
+       (password (hunchentoot:post-parameter "password")))
+   (format t "Got params ~a ~a~%" username password)
+   (if (maybe-login username password)
+       (restas:redirect 'login)
+       "Wrong credentials")))
+ 
 
 (restas:define-route logout ("logout")
-  "")
+  (restas:render-object (find-package :restas-pg-auth.view) (list :username "ololo")))
 
 (restas:define-route register ("register")
   "")

@@ -58,6 +58,12 @@
 	 (if (string= (password-of u) (calc-hash password (salt-of u)))
 	     t nil))))))
 
+(defgeneric get-auth-by-name (username))
+
+(defmethod get-auth-by-name ((username string))
+  (with-connection *db*
+    (get-dao 'userauth username)))
+
 (defun make-userauth (name password)
   (let ((s (random-passwd 10)))
     (make-instance 'userauth :name name :password (calc-hash password s) :salt s)))
