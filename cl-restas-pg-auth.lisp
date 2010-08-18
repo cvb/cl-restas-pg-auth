@@ -20,4 +20,10 @@
 (in-package #:restas-pg-auth)
 
 (defparameter *db* nil)
-
+(set-local-time-cl-postgres-readers)
+(let ((basepath (merge-pathnames "templates/"
+                                 (asdf:component-pathname (asdf:find-system '#:cl-restas-pg-auth)))))
+  (iter (for tmpl in '("login"))
+        (closure-template:compile-template :common-lisp-backend
+                                           (merge-pathnames (format nil "~A.tmpl" tmpl)
+                                                            basepath))))
