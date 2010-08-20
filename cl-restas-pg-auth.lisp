@@ -15,10 +15,16 @@
 
 (restas:define-module #:restas-pg-auth
     (:use #:cl #:iterate #:postmodern #:local-time)
-  (:export #:*db*))
+  (:export #:*db*
+	   #:*session-expire*
+	   #:REGISTER
+	   #:LOGIN/POST
+	   #:LOGIN
+           #:LOGOUT))
 
 (in-package #:restas-pg-auth)
 
+(defparameter *session-expire* nil)
 (defparameter *db* nil)
 (set-local-time-cl-postgres-readers)
 (let ((basepath (merge-pathnames "templates/"

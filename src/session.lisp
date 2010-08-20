@@ -15,12 +15,10 @@
 
 (in-package :restas-pg-auth)
 
-(defparameter *session-expire* nil)
-
 (defclass session ()
   ((user-id :col-type integer :initarg :user-id :reader user-id)
    (s :col-type (varchar 255) :initarg :s :reader s-of)
-   (timestamp :col-type timestamp-with-time-zone :initform (simple-date:universal-time-to-timestamp (get-universal-time))
+   (timestamp :col-type timestamp-with-time-zone :initform (now)
 	      :reader timestamp-of))
   (:metaclass dao-class)
   (:keys user-id s))
@@ -55,8 +53,8 @@
 (defmethod check-session-expiration ((s session))
   (if (< (exp-to-sec *session-expire*)
 	 (timestamp-difference (now) (timestamp-of s)))
-       (with-connection *db*
-	    (delete-dao s) nil)
+      (with-connection *db*
+	(delete-dao s) nil)
       s))
 
 (define-condition no-such-session (error)

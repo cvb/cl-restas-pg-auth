@@ -15,9 +15,14 @@
 
 (in-package :restas-pg-auth)
 
+(defun check-session (s)
+  (handler-case
+      (check-session-expiration s)
+    (no-such-session () (and (remove-auth-cookie) nil))))
+
 (defun logged-in-p ()
   (let ((c (get-auth-cookie)))
-    (if (and c (check-session-expiration c))
+    (if (and c (check-session c))
 	t nil)))
 
 (defun not-logged-in-p ()
@@ -27,7 +32,7 @@
   ((s :initarg :s :reader s-of)))
 (defun logged-in-as ()
   (with-connection *db*
-    (let ((u (query (:select 'username :from 'userauth :where
+    (let ((u (query (:select 'name :from 'userauth :where
 			     (:= 'id (:select 'user-id :from 'session :where
 					      (:= 's (get-auth-cookie))))))))
       (if u (car u)
@@ -36,7 +41,8 @@
 (defun maybe-login (username password)
   (if (and (not (logged-in-p))
 	   (same-password-p username password))
-      (set-auth-cookie (s-of (make-session (get-auth-by-name username))))
+      (let ((s (s-of (make-session (get-auth-by-name username)))))
+	(set-auth-cookie s))
       nil))
 
 (defun maybe-logout ()

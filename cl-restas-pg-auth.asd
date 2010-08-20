@@ -25,5 +25,7 @@
 	       (:file "routes")
 	       (:module src
 			:serial t
-			:components ((:file "session")
-				     (:file "user")))))
+			:components ((:file "user")
+				     (:file "session")
+				     (:file "cookies")
+				     (:file "interface")))))

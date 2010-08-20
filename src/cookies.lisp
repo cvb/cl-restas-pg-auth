@@ -25,3 +25,5 @@
 (defun get-auth-cookie ()
   (hunchentoot:cookie-in "userauth"))
 
+(defun remove-auth-cookie ()
+  (hunchentoot:set-cookie "userauth"))

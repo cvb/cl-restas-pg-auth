@@ -18,7 +18,7 @@
 (defclass userauth ()
   ((id :col-type serial :reader id-of)
    (name :col-type (varchar 255) :initarg :name
-         :reader country-name)
+         :reader name-of)
    (password :col-type (varchar 255) :initarg :password
 	     :reader password-of)
    (salt :col-type (varchar 255) :initarg :salt
